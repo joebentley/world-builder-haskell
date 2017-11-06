@@ -25,3 +25,6 @@ addRoom r (World m) = World $ Map.insert (getFreeKey m) r m
 
 getRoomByID :: Int -> World -> Maybe Room
 getRoomByID i w = Map.lookup i $ rooms w
+
+getNextRoomID :: World -> Int
+getNextRoomID (World m) = getFreeKey m
