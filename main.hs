@@ -14,8 +14,14 @@ test2 = parse testState "@create room Jail Cell Abode"
     >>= putStrLn . show . world
 
 testRoom :: Room
-testRoom = Room { roomID = 0, name = "Jail Cell",
-                  attrs = Map.fromList [("desc", "Horrible jail cell")], exits = Map.empty }
+testRoom = Room
+    { roomID = 0, name = "Jail Cell", attrs = Map.fromList [("desc", "Horrible jail cell")],
+      exits = Map.fromList [("n", 1)] }
+
+testRoom2 :: Room
+testRoom2 = Room
+    { roomID = 1, name = "Corridor", attrs = Map.fromList [("desc", "Dark corridor")],
+      exits = Map.fromList [("s", 0)] }
 
 testState :: State
-testState = apply (addRoom testRoom) $ emptyState
+testState = apply (addRoom testRoom2 . addRoom testRoom) $ emptyState
