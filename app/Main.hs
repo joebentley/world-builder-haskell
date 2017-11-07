@@ -1,3 +1,5 @@
+module Main where
+
 import Interface
 import World
 import qualified Data.Map as Map
