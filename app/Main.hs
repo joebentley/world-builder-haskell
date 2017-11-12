@@ -9,7 +9,9 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 
 main :: IO ()
-main = loop testState >> return ()
+main = do
+    loop testState;
+    return ()
 
 test1 :: IO ()
 test1 = parse testState "@create room Jail Cell Abode" >>= TIO.putStrLn . T.pack . show . world

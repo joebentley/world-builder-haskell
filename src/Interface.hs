@@ -10,8 +10,12 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Data.Text.Read (decimal)
 import Data.Aeson
-import qualified Data.ByteString.Lazy as B
+import Data.Aeson.Encode.Pretty (encodePretty)
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Lazy as BL
+import System.IO
 import Data.Maybe
+-- import System.Posix.Signals (installHandler, Handler(Catch), sigINT, sigTERM)
 import World
 
 -- Helper functions
@@ -52,14 +56,27 @@ parse state str
             (\s -> parse s "look") $ state { currentRoom = maybe (currentRoom state) id . Map.lookup (ws !! 0) $ exits room}
     | ws !! 0 == "@save" =
         let filepath = ws !! 1 in
-            B.writeFile (T.unpack filepath) (encode $ wld) >> return state
+            do
+                h <- openFile (T.unpack filepath) ReadWriteMode
+                B.hPutStr h (BL.toStrict . encodePretty $ wld);
+                hClose h;
+                return state
     | ws !! 0 == "@load" =
         let filepath = ws !! 1 in
-            B.readFile (T.unpack filepath) >>= return . State 0 . fromJust . decode
-    | otherwise         = return state
+            do
+                h <- openFile (T.unpack filepath) ReadWriteMode
+                s <- B.hGetContents h
+                hClose h;
+                return . State 0 . fromJust . decode . BL.fromStrict $ s
+    | otherwise = return state
     where
         ws = T.words str
         wld = world state
 
 loop :: State -> IO State
-loop s = TIO.putStr "> " >> TIO.getLine >>= parse s >>= loop
+loop state = do
+    putStr "> ";
+    hFlush stdout;
+    l <- TIO.getLine;
+    newState <- parse state l;
+    loop newState

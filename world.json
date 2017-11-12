@@ -1,1 +1,24 @@
-{"rooms":{"0":{"roomID":0,"name":"Jail Cell","attrs":{"desc":"Horrible jail cell"},"exits":{"n":1}},"1":{"roomID":1,"name":"Corridor","attrs":{"desc":"Dark corridor"},"exits":{"s":0}}}}
+{
+    "rooms": {
+        "0": {
+            "attrs": {
+                "desc": "Horfffrible jail cell"
+            },
+            "name": "Jail Cell",
+            "roomID": 0,
+            "exits": {
+                "n": 1
+            }
+        },
+        "1": {
+            "attrs": {
+                "desc": "Dark corridor"
+            },
+            "name": "Corridor",
+            "roomID": 1,
+            "exits": {
+                "s": 0
+            }
+        }
+    }
+}
