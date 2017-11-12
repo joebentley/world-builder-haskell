@@ -10,6 +10,8 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Data.Text.Read (decimal)
 import Data.Aeson
+import qualified Data.ByteString.Lazy as B
+import Data.Maybe
 import World
 
 -- Helper functions
@@ -28,7 +30,7 @@ emptyState = State 0 emptyWorld
 
 parse :: State -> Text -> IO State
 parse state str
-    | T.length str == 0   = return state
+    | T.length str == 0 = return state
     | str == "q"        = exitSuccess
     | ws !! 0 == "look" =
         let r = getRoomByID (currentRoom state) $ wld in
@@ -48,8 +50,12 @@ parse state str
     | ws !! 0 `elem` ["n", "s", "e", "w", "ne", "nw", "se", "sw"] =
         let room = fromJust . getRoomByID (currentRoom state) $ wld in -- assume that current room is valid
             (\s -> parse s "look") $ state { currentRoom = maybe (currentRoom state) id . Map.lookup (ws !! 0) $ exits room}
-    -- | ws !! 0 == "@save" =
-    --     let filepath = ws !! 1 in
+    | ws !! 0 == "@save" =
+        let filepath = ws !! 1 in
+            B.writeFile (T.unpack filepath) (encode $ wld) >> return state
+    | ws !! 0 == "@load" =
+        let filepath = ws !! 1 in
+            B.readFile (T.unpack filepath) >>= return . State 0 . fromJust . decode
     | otherwise         = return state
     where
         ws = T.words str

@@ -1,0 +1,1 @@
+{"rooms":{"0":{"roomID":0,"name":"Jail Cell","attrs":{"desc":"Horrible jail cell"},"exits":{"n":1}},"1":{"roomID":1,"name":"Corridor","attrs":{"desc":"Dark corridor"},"exits":{"s":0}}}}
