@@ -22,7 +22,7 @@ instance Functor ZipList where
 
 instance Applicative ZipList where
     pure :: a -> ZipList a
-    pure a = ZipList (repeat a) -- infinite list of a
+    pure a = ZipList $ repeat a   -- exercise
 
     (<*>) :: ZipList (a -> b) -> ZipList a -> ZipList b
     (ZipList gs) <*> (ZipList xs) = ZipList (zipWith ($) gs xs)
