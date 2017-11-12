@@ -29,5 +29,8 @@ testRoom2 = Room
     { roomID = 1, name = "Corridor", attrs = Map.fromList [("desc", "Dark corridor")],
       exits = Map.fromList [("s", 0)] }
 
+testWorld :: World
+testWorld = addRoom testRoom2 . addRoom testRoom $ emptyWorld
+
 testState :: State
 testState = apply (addRoom testRoom2 . addRoom testRoom) $ emptyState

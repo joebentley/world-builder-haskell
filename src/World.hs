@@ -1,8 +1,12 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module World where
 
 import qualified Data.Map as Map
 import Data.Text (Text)
 import qualified Data.Text as T
+import Data.Aeson
+import Data.Monoid
 
 data Room = Room {
     roomID  :: Index,
@@ -11,7 +15,29 @@ data Room = Room {
     exits   :: Map.Map Text Index
 } deriving Show
 
+-- decode "{\"roomID\" : 4, \"name\" : \"Cell\", \"attrs\": {\"desc\": \"empty\"}, \"exits\": {\"n\": 4}}" :: Maybe Room
+instance FromJSON Room where
+    parseJSON = withObject "Room" $ \v -> Room
+        <$> (v .: "roomID")
+        <*> (v .: "name")
+        <*> (v .: "attrs")
+        <*> (v .: "exits")
+
+instance ToJSON Room where
+    toJSON (Room _roomID _name _attrs _exits) =
+        object ["roomID" .= _roomID, "name" .= _name, "attrs" .= _attrs, "exits" .= _exits]
+    
+    toEncoding (Room _roomID _name _attrs _exits) =
+        pairs ("roomID" .= _roomID <> "name" .= _name <> "attrs" .= _attrs <> "exits" .= _exits)
+
 data World = World { rooms :: Map.Map Index Room } deriving Show
+
+instance FromJSON World where
+    parseJSON = withObject "World" $ \v -> World <$> (v .: "rooms")
+
+instance ToJSON World where
+    toJSON (World _rooms) = object ["rooms" .= _rooms]
+    toEncoding (World _rooms) = pairs ("rooms" .= _rooms)
 
 type Index = Int
 

@@ -16,7 +16,7 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Interface, World
-  build-depends:       base >= 4.7 && < 5, containers, text
+  build-depends:       base >= 4.7 && < 5, containers, text, aeson
   default-language:    Haskell2010
 
 executable world-builder-haskell-exe

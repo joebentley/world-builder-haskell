@@ -9,6 +9,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Data.Text.Read (decimal)
+import Data.Aeson
 import World
 
 -- Helper functions
@@ -47,6 +48,8 @@ parse state str
     | ws !! 0 `elem` ["n", "s", "e", "w", "ne", "nw", "se", "sw"] =
         let room = fromJust . getRoomByID (currentRoom state) $ wld in -- assume that current room is valid
             (\s -> parse s "look") $ state { currentRoom = maybe (currentRoom state) id . Map.lookup (ws !! 0) $ exits room}
+    -- | ws !! 0 == "@save" =
+    --     let filepath = ws !! 1 in
     | otherwise         = return state
     where
         ws = T.words str
